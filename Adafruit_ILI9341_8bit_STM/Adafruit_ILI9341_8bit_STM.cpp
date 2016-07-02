@@ -39,35 +39,14 @@ void Adafruit_ILI9341_8bit_STM::setupDataBus(void) {
   }
 }
 
-// void Adafruit_ILI9341_8bit_STM::write8_old(uint8_t c) {
-
-//   //retain values of A8-A15, and update A0-A7
-//   CS_ACTIVE;
-//   TFT_DATA->regs->ODR = ((TFT_DATA->regs->ODR | 0x00FF) | (c));//FF is Binary 0000000011111111
-//   WR_STROBE;
-//   CS_IDLE;
-// }
 void Adafruit_ILI9341_8bit_STM::write8(uint8_t c) {
 
   //retain values of A8-A15, and update A0-A7
   CS_ACTIVE;
-  unsigned char i, temp, data;
-  data = c;
-  for (i = 0; i <= 7; i++)
-    pinMode(DPINS[i], OUTPUT);
-  
-  for (i = 0; i <= 7;i++) { 
-    temp = (data & 0x01);
-    if (temp)
-      digitalWrite(DPINS[i], HIGH);
-    else
-      digitalWrite(DPINS[i], LOW);   
-    data = data >> 1;
-  }
+  TFT_DATA->regs->ODR = ((TFT_DATA->regs->ODR & 0xFF00) | ((c) & 0x00FF));//FF00 is Binary 1111111100000000
   WR_STROBE;
   CS_IDLE;
 }
-
 
 void Adafruit_ILI9341_8bit_STM::writecommand(uint8_t c) {
   CD_COMMAND;

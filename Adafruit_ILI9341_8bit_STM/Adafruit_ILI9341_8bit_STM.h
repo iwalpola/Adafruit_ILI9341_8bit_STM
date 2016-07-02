@@ -111,14 +111,6 @@ Define pins and Output Data Registers
 #define TFT_WR_MASK    digitalPinToBitMask(TFT_WR)
 #define TFT_RS_MASK    digitalPinToBitMask(TFT_RS)
 #define TFT_CS_MASK    digitalPinToBitMask(TFT_CS)
-#define D_0            digitalPinToBitMask(PA0)
-#define D_1            digitalPinToBitMask(PA1)
-#define D_2            digitalPinToBitMask(PA2)
-#define D_3            digitalPinToBitMask(PA3)
-#define D_4            digitalPinToBitMask(PA4)
-#define D_5            digitalPinToBitMask(PA5)
-#define D_6            digitalPinToBitMask(PA6)
-#define D_7            digitalPinToBitMask(PA7)
 
 #define RD_ACTIVE    TFT_CNTRL &= ~TFT_RD_MASK
 #define RD_IDLE      TFT_CNTRL |= TFT_RD_MASK
