@@ -1,7 +1,11 @@
 # Adafruit_ILI9341_8bit_STM
 8 bit parallel library for ILI9341 and STM32F1
 
-##How to use
+##Working Example List
+
+###graphicstest.ino (use Adafruit_GFX_AS)
+
+###How to use
 ###8 bit parallel interface
 
 Port data |D7 |D6 |D5 |D4 |D3 |D2 |D1 |D0 |
