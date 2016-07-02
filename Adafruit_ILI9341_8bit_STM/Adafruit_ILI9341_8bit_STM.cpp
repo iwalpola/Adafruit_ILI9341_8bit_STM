@@ -16,15 +16,13 @@ Adafruit_ILI9341_8bit_STM::Adafruit_ILI9341_8bit_STM(void)
 : Adafruit_GFX(ILI9341_TFTWIDTH, ILI9341_TFTHEIGHT) {
   
   pinMode(TFT_CS, OUTPUT);    // Enable outputs
-  pinMode(TFT_CD, OUTPUT);
+  pinMode(TFT_RS, OUTPUT);
   pinMode(TFT_WR, OUTPUT);
   pinMode(TFT_RD, OUTPUT);
-  #if defined(__STM32F1__)
     CS_IDLE; // Set all control bits to HIGH (idle)
-    CD_IDLE; // Signals are ACTIVE LOW
+    CD_DATA; // Signals are ACTIVE LOW
     WR_IDLE;
     RD_IDLE;
-  #endif
   if(TFT_RST) {
     pinMode(TFT_RST, OUTPUT);
     digitalWrite(TFT_RST, HIGH);
@@ -41,11 +39,31 @@ void Adafruit_ILI9341_8bit_STM::setupDataBus(void) {
   }
 }
 
+// void Adafruit_ILI9341_8bit_STM::write8_old(uint8_t c) {
+
+//   //retain values of A8-A15, and update A0-A7
+//   CS_ACTIVE;
+//   TFT_DATA->regs->ODR = ((TFT_DATA->regs->ODR | 0x00FF) | (c));//FF is Binary 0000000011111111
+//   WR_STROBE;
+//   CS_IDLE;
+// }
 void Adafruit_ILI9341_8bit_STM::write8(uint8_t c) {
 
   //retain values of A8-A15, and update A0-A7
   CS_ACTIVE;
-  TFT_DATA->regs->ODR = ((TFT_DATA->regs->ODR | 0x00FF) | (c));//FF is Binary 0000000011111111
+  unsigned char i, temp, data;
+  data = c;
+  for (i = 0; i <= 7; i++)
+    pinMode(DPINS[i], OUTPUT);
+  
+  for (i = 0; i <= 7;i++) { 
+    temp = (data & 0x01);
+    if (temp)
+      digitalWrite(DPINS[i], HIGH);
+    else
+      digitalWrite(DPINS[i], LOW);   
+    data = data >> 1;
+  }
   WR_STROBE;
   CS_IDLE;
 }
@@ -109,20 +127,7 @@ void Adafruit_ILI9341_8bit_STM::begin(void) {
     digitalWrite(TFT_RST, HIGH);
     delay(150);
   }
-
-  /*
-  uint8_t x = readcommand8(ILI9341_RDMODE);
-  Serial.print("\nDisplay Power Mode: 0x"); Serial.println(x, HEX);
-  x = readcommand8(ILI9341_RDMADCTL);
-  Serial.print("\nMADCTL Mode: 0x"); Serial.println(x, HEX);
-  x = readcommand8(ILI9341_RDPIXFMT);
-  Serial.print("\nPixel Format: 0x"); Serial.println(x, HEX);
-  x = readcommand8(ILI9341_RDIMGFMT);
-  Serial.print("\nImage Format: 0x"); Serial.println(x, HEX);
-  x = readcommand8(ILI9341_RDSELFDIAG);
-  Serial.print("\nSelf Diagnostic: 0x"); Serial.println(x, HEX);
-  */
-  //if(cmdList) commandList(cmdList);
+  
 
   writecommand(0xEF);
   writedata(0x03);

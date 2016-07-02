@@ -102,28 +102,32 @@ Define pins and Output Data Registers
 //Pin stm32    |PB4|PB5|PB6|PB7|PB8|
 #define TFT_CNTRL      GPIOB->regs->ODR
 #define TFT_DATA       GPIOA
-#define TFT_RD         GPIO_Pin_4
-#define TFT_WR         GPIO_Pin_5
-#define TFT_RS         GPIO_Pin_6
-#define TFT_CS         GPIO_Pin_7
-#define TFT_RST        GPIO_Pin_8
-#define D_0            GPIO_Pin_0
-#define D_1            GPIO_Pin_1
-#define D_2            GPIO_Pin_2
-#define D_3            GPIO_Pin_3
-#define D_4            GPIO_Pin_4
-#define D_5            GPIO_Pin_5
-#define D_6            GPIO_Pin_6
-#define D_7            GPIO_Pin_7
+#define TFT_RD         PB4
+#define TFT_WR         PB5
+#define TFT_RS         PB6
+#define TFT_CS         PB7
+#define TFT_RST        PB8
+#define TFT_RD_MASK    digitalPinToBitMask(TFT_RD)
+#define TFT_WR_MASK    digitalPinToBitMask(TFT_WR)
+#define TFT_RS_MASK    digitalPinToBitMask(TFT_RS)
+#define TFT_CS_MASK    digitalPinToBitMask(TFT_CS)
+#define D_0            digitalPinToBitMask(PA0)
+#define D_1            digitalPinToBitMask(PA1)
+#define D_2            digitalPinToBitMask(PA2)
+#define D_3            digitalPinToBitMask(PA3)
+#define D_4            digitalPinToBitMask(PA4)
+#define D_5            digitalPinToBitMask(PA5)
+#define D_6            digitalPinToBitMask(PA6)
+#define D_7            digitalPinToBitMask(PA7)
 
-#define RD_ACTIVE    TFT_CNTRL &= ~TFT_RD
-#define RD_IDLE      TFT_CNTRL |= TFT_RD
-#define WR_ACTIVE    TFT_CNTRL &= ~TFT_WR
-#define WR_IDLE      TFT_CNTRL |= TFT_WR
-#define CD_COMMAND   TFT_CNTRL &= ~TFT_RS
-#define CD_DATA      TFT_CNTRL |= TFT_RS
-#define CS_ACTIVE    TFT_CNTRL &= ~TFT_CS
-#define CS_IDLE      TFT_CNTRL |= TFT_CS
+#define RD_ACTIVE    TFT_CNTRL &= ~TFT_RD_MASK
+#define RD_IDLE      TFT_CNTRL |= TFT_RD_MASK
+#define WR_ACTIVE    TFT_CNTRL &= ~TFT_WR_MASK
+#define WR_IDLE      TFT_CNTRL |= TFT_WR_MASK
+#define CD_COMMAND   TFT_CNTRL &= ~TFT_RS_MASK
+#define CD_DATA      TFT_CNTRL |= TFT_RS_MASK
+#define CS_ACTIVE    TFT_CNTRL &= ~TFT_CS_MASK
+#define CS_IDLE      TFT_CNTRL |= TFT_CS_MASK
 
 #ifndef RD_STROBE
  #define RD_STROBE  RD_ACTIVE, RD_IDLE
@@ -154,12 +158,13 @@ class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
   uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
 
   /* These are not for current use, 8-bit protocol only! */
-  uint8_t  readdata(void),
+  //uint8_t  readdata(void),
     // readcommand8(uint8_t reg, uint8_t index = 0); 
 
   void     write8(uint8_t),
     writecommand(uint8_t c),
     writedata(uint8_t d),
+    setupDataBus(void),
     commandList(uint8_t *addr);
   // uint8_t  spiread(void);
 
@@ -171,7 +176,7 @@ class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
 
 
 #if defined (__STM32F1__)
-    uint16_t DPINS[] = {PA0, PA1, PA2, PA3, PA4, PA5, PA6, PA7};
+  uint8_t DPINS[8] = {PA0, PA1, PA2, PA3, PA4, PA5, PA6, PA7};
 	 uint16_t lineBuffer[ILI9341_TFTHEIGHT]; // DMA buffer. 16bit color data per pixel
 #endif
 };
