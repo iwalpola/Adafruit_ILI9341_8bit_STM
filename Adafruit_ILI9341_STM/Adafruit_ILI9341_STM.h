@@ -92,13 +92,50 @@ This library has been modified for the Maple Mini
 #define ILI9341_GREENYELLOW 0xAFE5      /* 173, 255,  47 */
 #define ILI9341_PINK        0xF81F
 
+/*
+Define pins and Output Data Registers
+*/
+
+//Port data |D7 |D6 |D5 |D4 |D3 |D2 |D1 |D0 |
+//Pin stm32 |PA7|PA6|PA5|PA4|PA3|PA2|PC1|PA0|
+//Control pins |RD |WR |RS |CS |RST|
+//Pin stm32    |PB4|PB5|PB6|PB7|PB8|
+#define TFT_CNTRL      GPIOB->regs->ODR
+#define TFT_DATA       GPIOA
+#define TFT_RD         GPIO_Pin_4
+#define TFT_WR         GPIO_Pin_5
+#define TFT_RS         GPIO_Pin_6
+#define TFT_CS         GPIO_Pin_7
+#define TFT_RST        GPIO_Pin_8
+#define D_0            GPIO_Pin_0
+#define D_1            GPIO_Pin_1
+#define D_2            GPIO_Pin_2
+#define D_3            GPIO_Pin_3
+#define D_4            GPIO_Pin_4
+#define D_5            GPIO_Pin_5
+#define D_6            GPIO_Pin_6
+#define D_7            GPIO_Pin_7
+
+#define RD_ACTIVE    TFT_CNTRL &= ~TFT_RD
+#define RD_IDLE      TFT_CNTRL |= TFT_RD
+#define WR_ACTIVE    TFT_CNTRL &= ~TFT_WR
+#define WR_IDLE      TFT_CNTRL |= TFT_WR
+#define CD_COMMAND   TFT_CNTRL &= ~TFT_RS
+#define CD_DATA      TFT_CNTRL |= TFT_RS
+#define CS_ACTIVE    TFT_CNTRL &= ~TFT_CS
+#define CS_IDLE      TFT_CNTRL |= TFT_CS
+
+#ifndef RD_STROBE
+ #define RD_STROBE  RD_ACTIVE, RD_IDLE
+#endif
+#define WR_STROBE { WR_ACTIVE; WR_IDLE; }
+
+
 class Adafruit_ILI9341_STM : public Adafruit_GFX {
 
  public:
 
-  Adafruit_ILI9341_STM(int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK,
-		   int8_t _RST, int8_t _MISO);
-  Adafruit_ILI9341_STM(int8_t _CS, int8_t _DC, int8_t _RST = -1);
+  Adafruit_ILI9341_STM(void);
   
   void     begin(void),
            setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1),
@@ -118,18 +155,13 @@ class Adafruit_ILI9341_STM : public Adafruit_GFX {
 
   /* These are not for current use, 8-bit protocol only! */
   uint8_t  readdata(void),
-    readcommand8(uint8_t reg, uint8_t index = 0);
-  /*
-  uint16_t readcommand16(uint8_t);
-  uint32_t readcommand32(uint8_t);
-  void     dummyclock(void);
-  */  
+    // readcommand8(uint8_t reg, uint8_t index = 0); 
 
-  void     spiwrite(uint8_t),
+  void     write8(uint8_t),
     writecommand(uint8_t c),
     writedata(uint8_t d),
     commandList(uint8_t *addr);
-  uint8_t  spiread(void);
+  // uint8_t  spiread(void);
 
 
  private:
@@ -138,22 +170,10 @@ class Adafruit_ILI9341_STM : public Adafruit_GFX {
 
 
 
-  boolean  hwSPI;
-#if defined (__AVR__) || defined(TEENSYDUINO)
-  uint8_t mySPCR;
-  volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
-  int8_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
-  uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
-#elif defined (__STM32F1__)
-    volatile uint32 *mosiport, *clkport, *dcport, *rsport, *csport;
-    uint32_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
-    uint32_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
-	uint16_t lineBuffer[ILI9341_TFTHEIGHT]; // DMA buffer. 16bit color data per pixel
-#elif defined (__arm__)
-    volatile RwReg *mosiport, *clkport, *dcport, *rsport, *csport;
-    uint32_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
-    uint32_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
+#if defined (__STM32F1__)
+    uint16_t DPINS[] = {PA0, PA1, PA2, PA3, PA4, PA5, PA6, PA7};
+	 uint16_t lineBuffer[ILI9341_TFTHEIGHT]; // DMA buffer. 16bit color data per pixel
 #endif
 };
 
-#endif
+#endif //endif of the header file
