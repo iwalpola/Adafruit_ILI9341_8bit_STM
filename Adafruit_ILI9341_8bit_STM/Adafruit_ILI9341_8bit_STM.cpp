@@ -3,7 +3,7 @@ See rights and use declaration in License.h
 This library has been modified for the Maple Mini.
 Includes DMA transfers on DMA1 CH2 and CH3.
 */
-#include <Adafruit_ILI9341_STM.h>
+#include <Adafruit_ILI9341_8bit_STM.h>
 #include <avr/pgmspace.h>
 #include <limits.h>
 #include <libmaple/dma.h>
@@ -12,7 +12,7 @@ Includes DMA transfers on DMA1 CH2 and CH3.
 
 
 // Constructor when using 8080 mode of control.
-Adafruit_ILI9341_STM::Adafruit_ILI9341_STM(void)
+Adafruit_ILI9341_8bit_STM::Adafruit_ILI9341_8bit_STM(void)
 : Adafruit_GFX(ILI9341_TFTWIDTH, ILI9341_TFTHEIGHT) {
   
   pinMode(TFT_CS, OUTPUT);    // Enable outputs
@@ -33,7 +33,7 @@ Adafruit_ILI9341_STM::Adafruit_ILI9341_STM(void)
   setupDataBus();
 }
 
-void Adafruit_ILI9341_STM::setupDataBus(void) {
+void Adafruit_ILI9341_8bit_STM::setupDataBus(void) {
   //set the pins to output mode
   //optimize later with CRL and CRH register
   for (uint8_t i = 0; i <= 7; i++){
@@ -41,7 +41,7 @@ void Adafruit_ILI9341_STM::setupDataBus(void) {
   }
 }
 
-void Adafruit_ILI9341_STM::write8(uint8_t c) {
+void Adafruit_ILI9341_8bit_STM::write8(uint8_t c) {
 
   //retain values of A8-A15, and update A0-A7
   CS_ACTIVE;
@@ -51,14 +51,14 @@ void Adafruit_ILI9341_STM::write8(uint8_t c) {
 }
 
 
-void Adafruit_ILI9341_STM::writecommand(uint8_t c) {
+void Adafruit_ILI9341_8bit_STM::writecommand(uint8_t c) {
   CD_COMMAND;
 
   write8(c);
 }
 
 
-void Adafruit_ILI9341_STM::writedata(uint8_t c) {
+void Adafruit_ILI9341_8bit_STM::writedata(uint8_t c) {
   CD_DATA;
 
   write8(c);
@@ -74,7 +74,7 @@ void Adafruit_ILI9341_STM::writedata(uint8_t c) {
 
 // Companion code to the above tables.  Reads and issues
 // a series of LCD commands stored in PROGMEM byte array.
-void Adafruit_ILI9341_STM::commandList(uint8_t *addr) {
+void Adafruit_ILI9341_8bit_STM::commandList(uint8_t *addr) {
 
   uint8_t  numCommands, numArgs;
   uint16_t ms;
@@ -98,7 +98,7 @@ void Adafruit_ILI9341_STM::commandList(uint8_t *addr) {
 }
 
 
-void Adafruit_ILI9341_STM::begin(void) {
+void Adafruit_ILI9341_8bit_STM::begin(void) {
 
   // toggle RST low to reset
   if (TFT_RST > 0) {
@@ -234,7 +234,7 @@ void Adafruit_ILI9341_STM::begin(void) {
 }
 
 
-void Adafruit_ILI9341_STM::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1,
+void Adafruit_ILI9341_8bit_STM::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1,
                                         uint16_t y1) {								
   writecommand(ILI9341_CASET); // Column addr set
   writedata(x0 >> 8);
@@ -253,12 +253,12 @@ void Adafruit_ILI9341_STM::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1,
 }
 
 
-void Adafruit_ILI9341_STM::pushColor(uint16_t color) {
+void Adafruit_ILI9341_8bit_STM::pushColor(uint16_t color) {
   writedata(color >> 8);
   writedata(color);
 }
 
-void Adafruit_ILI9341_STM::drawPixel(int16_t x, int16_t y, uint16_t color) {
+void Adafruit_ILI9341_8bit_STM::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
   if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height)) return;
 
@@ -270,7 +270,7 @@ void Adafruit_ILI9341_STM::drawPixel(int16_t x, int16_t y, uint16_t color) {
 }
 
 
-void Adafruit_ILI9341_STM::drawFastVLine(int16_t x, int16_t y, int16_t h,
+void Adafruit_ILI9341_8bit_STM::drawFastVLine(int16_t x, int16_t y, int16_t h,
                                         uint16_t color) {
 
   // Rudimentary clipping
@@ -295,7 +295,7 @@ void Adafruit_ILI9341_STM::drawFastVLine(int16_t x, int16_t y, int16_t h,
 }
 
 
-void Adafruit_ILI9341_STM::drawFastHLine(int16_t x, int16_t y, int16_t w,
+void Adafruit_ILI9341_8bit_STM::drawFastHLine(int16_t x, int16_t y, int16_t w,
                                         uint16_t color) {
 
   
@@ -317,13 +317,13 @@ void Adafruit_ILI9341_STM::drawFastHLine(int16_t x, int16_t y, int16_t w,
   }
 }
 
-void Adafruit_ILI9341_STM::fillScreen(uint16_t color) {
+void Adafruit_ILI9341_8bit_STM::fillScreen(uint16_t color) {
 
   fillRect(0, 0,  _width, _height, color);
 }
 
 // fill a rectangle
-void Adafruit_ILI9341_STM::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
+void Adafruit_ILI9341_8bit_STM::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
                                    uint16_t color) {
 
   // rudimentary clipping (drawChar w/big text requires this)
@@ -352,7 +352,7 @@ void Adafruit_ILI9341_STM::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 * Draw lines faster by calculating straight sections and drawing them with fastVline and fastHline.
 */
 #if defined (__STM32F1__)
-void Adafruit_ILI9341_STM::drawLine(int16_t x0, int16_t y0,int16_t x1, int16_t y1, uint16_t color)
+void Adafruit_ILI9341_8bit_STM::drawLine(int16_t x0, int16_t y0,int16_t x1, int16_t y1, uint16_t color)
 {
 	if ((y0 < 0 && y1 <0) || (y0 > _height && y1 > _height)) return;
 	if ((x0 < 0 && x1 <0) || (x0 > _width && x1 > _width)) return;
@@ -464,7 +464,7 @@ void Adafruit_ILI9341_STM::drawLine(int16_t x0, int16_t y0,int16_t x1, int16_t y
 
 
 // Pass 8-bit (each) R,G,B, get back 16-bit packed color
-uint16_t Adafruit_ILI9341_STM::color565(uint8_t r, uint8_t g, uint8_t b) {
+uint16_t Adafruit_ILI9341_8bit_STM::color565(uint8_t r, uint8_t g, uint8_t b) {
   return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
 }
 
@@ -477,7 +477,7 @@ uint16_t Adafruit_ILI9341_STM::color565(uint8_t r, uint8_t g, uint8_t b) {
 #define MADCTL_BGR 0x08
 #define MADCTL_MH  0x04
 
-void Adafruit_ILI9341_STM::setRotation(uint8_t m) {
+void Adafruit_ILI9341_8bit_STM::setRotation(uint8_t m) {
 
   writecommand(ILI9341_MADCTL);
   rotation = m % 4; // can't be higher than 3
@@ -506,7 +506,7 @@ void Adafruit_ILI9341_STM::setRotation(uint8_t m) {
 }
 
 
-void Adafruit_ILI9341_STM::invertDisplay(boolean i) {
+void Adafruit_ILI9341_8bit_STM::invertDisplay(boolean i) {
   writecommand(i ? ILI9341_INVON : ILI9341_INVOFF);
 }
 
@@ -514,7 +514,7 @@ void Adafruit_ILI9341_STM::invertDisplay(boolean i) {
 ////////// stuff not actively being used, but kept for posterity
 
 
-// uint8_t Adafruit_ILI9341_STM::spiread(void) {
+// uint8_t Adafruit_ILI9341_8bit_STM::spiread(void) {
 //   uint8_t r = 0;
 
 //   if (hwSPI) {
@@ -550,7 +550,7 @@ void Adafruit_ILI9341_STM::invertDisplay(boolean i) {
 //   return r;
 // }
 
-// uint8_t Adafruit_ILI9341_STM::readdata(void) {
+// uint8_t Adafruit_ILI9341_8bit_STM::readdata(void) {
 //   digitalWrite(_dc, HIGH);
 //   digitalWrite(_cs, LOW);
 //   uint8_t r = spiread();
@@ -560,7 +560,7 @@ void Adafruit_ILI9341_STM::invertDisplay(boolean i) {
 // }
 
 
-// uint8_t Adafruit_ILI9341_STM::readcommand8(uint8_t c, uint8_t index) {
+// uint8_t Adafruit_ILI9341_8bit_STM::readcommand8(uint8_t c, uint8_t index) {
 //   if (hwSPI) spi_begin();
 //   digitalWrite(_dc, LOW); // command
 //   digitalWrite(_cs, LOW);
@@ -585,7 +585,7 @@ void Adafruit_ILI9341_STM::invertDisplay(boolean i) {
 
 /*
 
- uint16_t Adafruit_ILI9341_STM::readcommand16(uint8_t c) {
+ uint16_t Adafruit_ILI9341_8bit_STM::readcommand16(uint8_t c) {
  digitalWrite(_dc, LOW);
  if (_cs)
  digitalWrite(_cs, LOW);
@@ -602,7 +602,7 @@ void Adafruit_ILI9341_STM::invertDisplay(boolean i) {
  return r;
  }
 
- uint32_t Adafruit_ILI9341_STM::readcommand32(uint8_t c) {
+ uint32_t Adafruit_ILI9341_8bit_STM::readcommand32(uint8_t c) {
  digitalWrite(_dc, LOW);
  if (_cs)
  digitalWrite(_cs, LOW);
