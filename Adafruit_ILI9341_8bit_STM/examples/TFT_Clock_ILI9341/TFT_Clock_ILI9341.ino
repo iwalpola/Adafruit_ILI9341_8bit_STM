@@ -13,22 +13,15 @@
 
 //#define sclk 6  // Don't change
 //#define mosi 4  // Don't change
-#define cs   PB4 
-#define dc   PA15
-#define rst  PB3  
 // you can also connect this to the Arduino reset
 
-#define TFT_CS         PB4                  //10          pin 3          10
-#define TFT_DC         PA15                 // 9          pin 5           9
-#define TFT_RST        PB3                  // 8          pin 4           8
-
 #include <Adafruit_GFX_AS.h>    // Core graphics library, with extra fonts.
-#include <Adafruit_ILI9341_STM.h> // STM32 DMA Hardware-specific library
+#include <Adafruit_ILI9341_8bit_STM.h> // STM32 DMA Hardware-specific library
 #include <SPI.h>
 
 #define ILI9341_GREY 0x5AEB
 
-Adafruit_ILI9341_STM tft = Adafruit_ILI9341_STM(cs, dc, rst);       // Invoke custom library
+Adafruit_ILI9341_8bit_STM tft = Adafruit_ILI9341_8bit_STM();       // Invoke custom library
 
 float sx = 0, sy = 1, mx = 1, my = 0, hx = -1, hy = 0;    // Saved H, M, S x & y multipliers
 float sdeg=0, mdeg=0, hdeg=0;

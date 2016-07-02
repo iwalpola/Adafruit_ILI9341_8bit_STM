@@ -33,17 +33,14 @@ code	color
 // These are the connections for the UNO
 //#define sclk 6  // Don't change
 //#define mosi 4  // Don't change
-#define cs   8
-#define dc   10
-#define rst  9  // you can also connect this to the Arduino reset
 
 #include <Adafruit_GFX_AS.h>    // Core graphics library, with extra fonts.
-#include <Adafruit_ILI9341_STM.h> // STM32 DMA Hardware-specific library
+#include <Adafruit_ILI9341_8bit_STM.h> // STM32 DMA Hardware-specific library
 #include <SPI.h>
 
 #define ILI9341_GREY 0x5AEB
 
-Adafruit_ILI9341_STM tft = Adafruit_ILI9341_STM(cs, dc, rst);       // Invoke custom library
+Adafruit_ILI9341_8bit_STM tft = Adafruit_ILI9341_8bit_STM();       // Invoke custom library
 
 uint32_t targetTime = 0;                    // for next 1 second timeout
 uint8_t hh=conv2d(__TIME__), mm=conv2d(__TIME__+3), ss=conv2d(__TIME__+6);  // Get H, M, S from compile time

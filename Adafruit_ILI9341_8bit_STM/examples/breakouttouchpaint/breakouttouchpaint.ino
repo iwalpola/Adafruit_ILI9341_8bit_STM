@@ -17,7 +17,7 @@
 
 #include <Adafruit_GFX_AS.h>    // Core graphics library
 #include <SPI.h>
-#include <Adafruit_ILI9341_STM.h>
+#include <Adafruit_ILI9341_8bit_STM.h>
 #include <TouchScreen_STM.h>
 
 // These are the four touchscreen analog pins
@@ -35,10 +35,8 @@
 #define MINPRESSURE 10
 #define MAXPRESSURE 1000
 
-// The display uses hardware SPI, plus #9 & #10
-#define TFT_CS 10
-#define TFT_DC 9
-Adafruit_ILI9341_STM tft = Adafruit_ILI9341_STM(TFT_CS, TFT_DC);
+// The display uses hardware SPI
+Adafruit_ILI9341_8bit_STM tft = Adafruit_ILI9341_8bit_STM();
 
 // For better pressure precision, we need to know the resistance
 // between X+ and X- Use any multimeter to read it

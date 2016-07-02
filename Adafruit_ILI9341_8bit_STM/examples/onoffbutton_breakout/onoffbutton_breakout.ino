@@ -6,7 +6,7 @@
 #include <Adafruit_GFX.h>
 #include <SPI.h>
 #include <Wire.h>
-#include <Adafruit_ILI9341_STM.h>
+#include <Adafruit_ILI9341_8bit_STM.h>
 #include <TouchScreen.h>
 
 //Touchscreen X+ X- Y+ Y- pins
@@ -30,9 +30,7 @@
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 
-#define TFT_CS 10
-#define TFT_DC 9
-Adafruit_ILI9341_STM tft = Adafruit_ILI9341_STM(TFT_CS, TFT_DC);
+Adafruit_ILI9341_8bit_STM tft = Adafruit_ILI9341_8bit_STM();
 
 boolean RecordOn = false;
 

@@ -131,11 +131,11 @@ Define pins and Output Data Registers
 #define WR_STROBE { WR_ACTIVE; WR_IDLE; }
 
 
-class Adafruit_ILI9341_STM : public Adafruit_GFX {
+class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
 
  public:
 
-  Adafruit_ILI9341_STM(void);
+  Adafruit_ILI9341_8bit_STM(void);
   
   void     begin(void),
            setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1),

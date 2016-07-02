@@ -15,7 +15,7 @@
 
 
 #include <Adafruit_GFX.h>    // Core graphics library
-#include "Adafruit_ILI9341_STM.h" // Hardware-specific library
+#include "Adafruit_ILI9341_8bit_STM.h" // Hardware-specific library
 #include <SPI.h>
 #include <SD.h>
 
@@ -24,9 +24,8 @@
 // cannot be remapped to alternate pins.  For Arduino Uno,
 // Duemilanove, etc., pin 11 = MOSI, pin 12 = MISO, pin 13 = SCK.
 
-#define TFT_DC 9
-#define TFT_CS 10
-Adafruit_ILI9341_STM tft = Adafruit_ILI9341_STM(TFT_CS, TFT_DC);
+
+Adafruit_ILI9341_8bit_STM tft = Adafruit_ILI9341_8bit_STM();
 
 #define SD_CS 4
 
