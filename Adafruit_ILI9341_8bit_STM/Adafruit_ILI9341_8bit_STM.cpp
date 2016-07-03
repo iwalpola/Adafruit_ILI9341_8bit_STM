@@ -28,10 +28,10 @@ Adafruit_ILI9341_8bit_STM::Adafruit_ILI9341_8bit_STM(void)
     digitalWrite(TFT_RST, HIGH);
   }
   //probably should set up 8 bit parallel port to write mode.
-  setupDataBus();
+  setWriteDataBus();
 }
 
-void Adafruit_ILI9341_8bit_STM::setupDataBus(void) {
+void Adafruit_ILI9341_8bit_STM::setWriteDataBus(void) {
   //set the pins to output mode
   //optimize later with CRL and CRH register
   for (uint8_t i = 0; i <= 7; i++){
@@ -39,13 +39,26 @@ void Adafruit_ILI9341_8bit_STM::setupDataBus(void) {
   }
 }
 
+void Adafruit_ILI9341_8bit_STM::setReadDataBus(void) {
+  //set the pins to output mode
+  //optimize later with CRL and CRH register
+  for (uint8_t i = 0; i <= 7; i++){
+    pinMode(DPINS[i], INPUT);
+  }
+}
+
 void Adafruit_ILI9341_8bit_STM::write8(uint8_t c) {
 
   //retain values of A8-A15, and update A0-A7
   CS_ACTIVE;
-  TFT_DATA->regs->ODR = ((TFT_DATA->regs->ODR & 0xFF00) | ((c) & 0x00FF));//FF00 is Binary 1111111100000000
+  //BRR or BSRR avoid read, mask write cycle time
+  //BSRR is 32 bits wide. 1's in the most significant 16 bits signify pins to reset (clear)
+  // 1's in least significant 16 bits signify pins to set high. 0's mean 'do nothing'
+  TFT_DATA->regs->BSRR = ((~c)<<16) | (c); //Set pins to the 8 bit number
+  //TFT_DATA->regs->ODR = ((TFT_DATA->regs->ODR & 0xFF00) | ((c) & 0x00FF));//FF00 is Binary 1111111100000000
   WR_STROBE;
   CS_IDLE;
+  //delayMicroseconds(50); //used to observe patterns
 }
 
 void Adafruit_ILI9341_8bit_STM::writecommand(uint8_t c) {
@@ -211,6 +224,8 @@ void Adafruit_ILI9341_8bit_STM::begin(void) {
   writedata(0x36);
   writedata(0x0F);
 
+  writecommand(ILI9341_INVOFF); //Invert Off
+  delay(120);
   writecommand(ILI9341_SLPOUT);    //Exit Sleep
   delay(120);
   writecommand(ILI9341_DISPON);    //Display on

@@ -8,7 +8,7 @@ This library has been modified for the Maple Mini
 
 #include "Arduino.h"
 #include "Print.h"
-#include <Adafruit_GFX_AS.h>
+#include <Adafruit_GFX.h>
 #include <avr/pgmspace.h>
 
 #define ILI9341_TFTWIDTH  240
@@ -122,9 +122,10 @@ Define pins and Output Data Registers
 #define CS_IDLE      TFT_CNTRL |= TFT_CS_MASK
 
 #ifndef RD_STROBE
- #define RD_STROBE  RD_ACTIVE, RD_IDLE
+ #define RD_STROBE  {RD_ACTIVE; RD_IDLE;}
 #endif
 #define WR_STROBE { WR_ACTIVE; WR_IDLE; }
+#define swap(a, b) { int16_t t = a; a = b; b = t; }
 
 
 class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
@@ -151,18 +152,22 @@ class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
 
   /* These are not for current use, 8-bit protocol only! */
   //uint8_t  readdata(void),
-    // readcommand8(uint8_t reg, uint8_t index = 0); 
+   uint8_t readcommand8(uint8_t reg); 
+   uint16_t readcommand16(uint8_t reg);
+   uint32_t readcommand32(uint8_t reg);
 
   void     write8(uint8_t),
     writecommand(uint8_t c),
     writedata(uint8_t d),
-    setupDataBus(void),
     commandList(uint8_t *addr);
   // uint8_t  spiread(void);
 
 
  private:
   uint8_t  tabcolor;
+  uint8_t  read8(void);
+  void     setReadDataBus(void);
+  void setWriteDataBus(void);
 
 
 
