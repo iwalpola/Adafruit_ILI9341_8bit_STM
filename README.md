@@ -5,6 +5,21 @@
 
  - graphicstest.ino
 
+#### Benchmarks
+Benchmark                Time (microseconds)  
+Screen fill              784951  
+Text                     27277  
+Lines                    242789  
+Horiz/Vert Lines         66034  
+Rectangles (outline)     42204  
+Rectangles (filled)      1630078  
+Circles (filled)         240487  
+Circles (outline)        180967  
+Triangles (outline)      58242  
+Triangles (filled)       563808  
+Rounded rects (outline)  84634  
+Rounded rects (filled)   1777583
+
 ### How to use
 #### 8 bit parallel interface
 Port data |D7 |D6 |D5 |D4 |D3 |D2 |D1 |D0 |  
