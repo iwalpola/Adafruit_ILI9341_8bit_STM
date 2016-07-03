@@ -100,7 +100,7 @@ Define pins and Output Data Registers
 //Pin stm32 |PA7|PA6|PA5|PA4|PA3|PA2|PC1|PA0|
 //Control pins |RD |WR |RS |CS |RST|
 //Pin stm32    |PB4|PB5|PB6|PB7|PB8|
-#define TFT_CNTRL      GPIOB->regs->ODR
+#define TFT_CNTRL      GPIOB
 #define TFT_DATA       GPIOA
 #define TFT_RD         PB4
 #define TFT_WR         PB5
@@ -112,14 +112,14 @@ Define pins and Output Data Registers
 #define TFT_RS_MASK    digitalPinToBitMask(TFT_RS)
 #define TFT_CS_MASK    digitalPinToBitMask(TFT_CS)
 
-#define RD_ACTIVE    TFT_CNTRL &= ~TFT_RD_MASK
-#define RD_IDLE      TFT_CNTRL |= TFT_RD_MASK
-#define WR_ACTIVE    TFT_CNTRL &= ~TFT_WR_MASK
-#define WR_IDLE      TFT_CNTRL |= TFT_WR_MASK
-#define CD_COMMAND   TFT_CNTRL &= ~TFT_RS_MASK
-#define CD_DATA      TFT_CNTRL |= TFT_RS_MASK
-#define CS_ACTIVE    TFT_CNTRL &= ~TFT_CS_MASK
-#define CS_IDLE      TFT_CNTRL |= TFT_CS_MASK
+#define RD_ACTIVE    TFT_CNTRL->regs->BRR  = TFT_RD_MASK
+#define RD_IDLE      TFT_CNTRL->regs->BSRR = TFT_RD_MASK
+#define WR_ACTIVE    TFT_CNTRL->regs->BRR  = TFT_WR_MASK
+#define WR_IDLE      TFT_CNTRL->regs->BSRR = TFT_WR_MASK
+#define CD_COMMAND   TFT_CNTRL->regs->BRR  = TFT_RS_MASK
+#define CD_DATA      TFT_CNTRL->regs->BSRR = TFT_RS_MASK
+#define CS_ACTIVE    TFT_CNTRL->regs->BRR  = TFT_CS_MASK
+#define CS_IDLE      TFT_CNTRL->regs->BSRR  = TFT_CS_MASK
 
 #ifndef RD_STROBE
  #define RD_STROBE  {RD_ACTIVE; RD_IDLE;}
