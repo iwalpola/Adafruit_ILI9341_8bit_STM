@@ -155,18 +155,17 @@ class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
    uint8_t readcommand8(uint8_t reg); 
    uint32_t readID(void);
 
-  void     write8(uint8_t),
-    writecommand(uint8_t c),
-    writedata(uint8_t d),
-    commandList(uint8_t *addr);
-  // uint8_t  spiread(void);
-
 
  private:
   uint8_t  tabcolor;
   uint8_t  read8(void);
-  void     setReadDataBus(void);
-  void setWriteDataBus(void);
+  void     setReadDataBus(void),
+    setWriteDataBus(void),
+    write8(uint8_t),
+    write8special(uint8_t),
+    writecommand(uint8_t c),
+    writedata(uint8_t d),
+    commandList(uint8_t *addr);
 
 
 

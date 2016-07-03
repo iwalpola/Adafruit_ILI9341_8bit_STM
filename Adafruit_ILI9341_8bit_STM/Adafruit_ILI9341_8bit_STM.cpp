@@ -63,6 +63,10 @@ void Adafruit_ILI9341_8bit_STM::write8(uint8_t c) {
   CS_IDLE;
   //delayMicroseconds(50); //used to observe patterns
 }
+void Adafruit_ILI9341_8bit_STM::write8special(uint8_t c) {
+  TFT_DATA->regs->BSRR = ((~c)<<16) | (c); //Set pins to the 8 bit number
+  WR_STROBE;
+}
 
 void Adafruit_ILI9341_8bit_STM::writecommand(uint8_t c) {
   CD_COMMAND;
@@ -238,19 +242,25 @@ void Adafruit_ILI9341_8bit_STM::begin(void) {
 
 void Adafruit_ILI9341_8bit_STM::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1,
                                         uint16_t y1) {								
-  writecommand(ILI9341_CASET); // Column addr set
-  writedata(x0 >> 8);
-  writedata(x0 & 0xFF);     // XSTART
-  writedata(x1 >> 8);
-  writedata(x1 & 0xFF);     // XEND
+  CS_ACTIVE;
+  CD_COMMAND;
+  write8special(ILI9341_CASET); // Column addr set
+  CD_DATA;
+  write8special(x0 >> 8);
+  write8special(x0 & 0xFF);     // XSTART
+  write8special(x1 >> 8);
+  write8special(x1 & 0xFF);     // XEND
 
-  writecommand(ILI9341_PASET); // Row addr set
-  writedata(y0 >> 8);
-  writedata(y0);     // YSTART
-  writedata(y1 >> 8);
-  writedata(y1);     // YEND
+  CD_COMMAND;
 
-  writecommand(ILI9341_RAMWR); // write to RAM
+  write8special(ILI9341_PASET); // Row addr set
+  CD_DATA;
+  write8special(y0 >> 8);
+  write8special(y0);     // YSTART
+  write8special(y1 >> 8);
+  write8special(y1);     // YEND
+  CD_COMMAND;
+  write8special(ILI9341_RAMWR); // write to RAM
 
 }
 
@@ -265,9 +275,10 @@ void Adafruit_ILI9341_8bit_STM::drawPixel(int16_t x, int16_t y, uint16_t color) 
   if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height)) return;
 
   setAddrWindow(x, y, x + 1, y + 1);
-
-  writedata(color >> 8);
-  writedata(color);
+  CD_DATA;
+  write8special(color >> 8);
+  write8special(color);
+  CS_IDLE;
 
 }
 
@@ -287,13 +298,13 @@ void Adafruit_ILI9341_8bit_STM::drawFastVLine(int16_t x, int16_t y, int16_t h,
 
   //  if (hwSPI) spi_begin();
   setAddrWindow(x, y, x, y + h - 1);
-  
+  CD_DATA;
   uint8_t hi = color >> 8, lo = color;
   while (h--) {
-    writedata(hi);
-    writedata(lo);
+    write8special(hi);
+    write8special(lo);
   }
-
+  CS_IDLE;
 }
 
 
@@ -311,12 +322,13 @@ void Adafruit_ILI9341_8bit_STM::drawFastHLine(int16_t x, int16_t y, int16_t w,
 
 //  if (hwSPI) spi_begin();
   setAddrWindow(x, y, x + w - 1, y);
-
+  CD_DATA;
 	uint8_t hi = color >> 8, lo = color;
   while (w--) {
-    write8(hi);
-    write8(lo);
+    write8special(hi);
+    write8special(lo);
   }
+  CS_IDLE;
 }
 
 void Adafruit_ILI9341_8bit_STM::fillScreen(uint16_t color) {
@@ -339,14 +351,15 @@ void Adafruit_ILI9341_8bit_STM::fillRect(int16_t x, int16_t y, int16_t w, int16_
   
   setAddrWindow(x, y, x + w - 1, y + h - 1);
 
-
+  CD_DATA;
   uint8_t hi = color >> 8, lo = color;
   for(y=h; y>0; y--) {
     for(x=w; x>0; x--){
-      writedata(hi);
-      writedata(lo);
+      write8special(hi);
+      write8special(lo);
     }
   }
+  CS_IDLE;
 
 }
 
@@ -370,7 +383,7 @@ void Adafruit_ILI9341_8bit_STM::drawLine(int16_t x0, int16_t y0,int16_t x1, int1
 		else if (x1 < x0) {
 			drawFastHLine(x1, y0, x0 - x1 + 1, color);
 		}
-		else {
+		else { //x0==x1 and y0==y1
 			drawPixel(x0, y0, color);
 		}
 		return;
