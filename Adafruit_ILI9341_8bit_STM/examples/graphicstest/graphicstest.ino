@@ -1,3 +1,6 @@
+#include <Adafruit_GFX.h>
+#include <gfxfont.h>
+
 /***************************************************
   This is our GFX example for the Adafruit ILI9341 Breakout and Shield
   ----> http://www.adafruit.com/products/1651
@@ -15,7 +18,6 @@
 
 
 
-#include "Adafruit_GFX_AS.h"
 #include "Adafruit_ILI9341_8bit_STM.h"
 
 // Use hardware SPI (on Uno, #13, #12, #11) and the above for CS/DC
@@ -24,23 +26,25 @@ Adafruit_ILI9341_8bit_STM tft = Adafruit_ILI9341_8bit_STM();
 //Adafruit_ILI9341_8bit_STM tft = Adafruit_ILI9341_8bit_STM(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("ILI9341 Test!"); 
   
  
   tft.begin();
 
-//  // read diagnostics (optional but can help debug problems)
-//  uint8_t x = tft.readcommand8(ILI9341_RDMODE);
-//  Serial.print("Display Power Mode: 0x"); Serial.println(x, HEX);
-//  x = tft.readcommand8(ILI9341_RDMADCTL);
-//  Serial.print("MADCTL Mode: 0x"); Serial.println(x, HEX);
-//  x = tft.readcommand8(ILI9341_RDPIXFMT);
-//  Serial.print("Pixel Format: 0x"); Serial.println(x, HEX);
-//  x = tft.readcommand8(ILI9341_RDIMGFMT);
-//  Serial.print("Image Format: 0x"); Serial.println(x, HEX);
-//  x = tft.readcommand8(ILI9341_RDSELFDIAG);
-//  Serial.print("Self Diagnostic: 0x"); Serial.println(x, HEX); 
+  // read diagnostics (optional but can help debug problems)
+  uint32_t x = tft.readcommand8(ILI9341_RDMODE);
+  Serial.print("Display Power Mode: 0x"); Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDMADCTL);
+  Serial.print("MADCTL Mode: 0x"); Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDPIXFMT);
+  Serial.print("Pixel Format: 0x"); Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDIMGFMT);
+  Serial.print("Image Format: 0x"); Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDSELFDIAG);
+  Serial.print("Self Diagnostic: 0x"); Serial.println(x, HEX); 
+  x = tft.readID();
+  Serial.print("Device ID: 0x"); Serial.println(x, HEX);
   
   Serial.println(F("Benchmark                Time (microseconds)"));
 
@@ -287,7 +291,7 @@ unsigned long testTriangles() {
       cx    , cy - i, // peak
       cx - i, cy + i, // bottom left
       cx + i, cy + i, // bottom right
-      tft.color565(0, 0, i));
+      ILI9341_NAVY);
   }
 
   return micros() - start;
@@ -303,10 +307,10 @@ unsigned long testFilledTriangles() {
   for(i=min(cx,cy); i>10; i-=5) {
     start = micros();
     tft.fillTriangle(cx, cy - i, cx - i, cy + i, cx + i, cy + i,
-      tft.color565(0, i, i));
+      ILI9341_BLACK);
     t += micros() - start;
     tft.drawTriangle(cx, cy - i, cx - i, cy + i, cx + i, cy + i,
-      tft.color565(i, i, 0));
+      ILI9341_MAROON);
   }
 
   return t;
@@ -323,7 +327,7 @@ unsigned long testRoundRects() {
   start = micros();
   for(i=0; i<w; i+=6) {
     i2 = i / 2;
-    tft.drawRoundRect(cx-i2, cy-i2, i, i, i/8, tft.color565(i, 0, 0));
+    tft.drawRoundRect(cx-i2, cy-i2, i, i, i/8, ILI9341_PINK);
   }
 
   return micros() - start;
@@ -339,7 +343,7 @@ unsigned long testFilledRoundRects() {
   start = micros();
   for(i=min(tft.width(), tft.height()); i>20; i-=6) {
     i2 = i / 2;
-    tft.fillRoundRect(cx-i2, cy-i2, i, i, i/8, tft.color565(0, i, 0));
+    tft.fillRoundRect(cx-i2, cy-i2, i, i, i/8, ILI9341_DARKCYAN);
   }
 
   return micros() - start;
