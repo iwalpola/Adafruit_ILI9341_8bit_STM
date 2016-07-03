@@ -29,21 +29,25 @@ Adafruit_ILI9341_8bit_STM::Adafruit_ILI9341_8bit_STM(void)
     TFT_CNTRL->regs->CRH = (TFT_CNTRL->regs->CRH & 0xFFFFFFF0) | 0x00000003; 
     digitalWrite(TFT_RST, HIGH);
   }
-  //probably should set up 8 bit parallel port to write mode.
+  //set up 8 bit parallel port to write mode.
   setWriteDataBus();
 }
 
 void Adafruit_ILI9341_8bit_STM::setWriteDataBus(void) {
-  // //set the pins to output mode
+  // set the pins to output mode
+  // not required to mask and assign, because all pins of bus are set together
   TFT_DATA->regs->CRL = 0x33333333;
-  //each pin is configured by four bits, and 0b0011 or 0x3 means output mode
+  //each pin is configured by four bits, and 0b0011 or 0x3 means output mode (same as pinmode())
 }
 
 void Adafruit_ILI9341_8bit_STM::setReadDataBus(void) {
   //set the pins to input mode
-  for (uint8_t i = 0; i <= 7; i++){
-    pinMode(DPINS[i], INPUT);
-  }
+  // not required to mask and assign, because all pins of bus are set together
+  TFT_DATA->regs->CRL = 0x88888888;
+  //8 in hex is 0b1000, which means input, same as pinmode()
+  // for (uint8_t i = 0; i <= 7; i++){
+  //   pinMode(DPINS[i], INPUT);
+  // }
 }
 
 void Adafruit_ILI9341_8bit_STM::write8(uint8_t c) {

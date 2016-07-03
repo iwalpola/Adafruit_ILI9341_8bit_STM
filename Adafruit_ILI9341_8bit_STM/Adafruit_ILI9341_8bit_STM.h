@@ -172,7 +172,6 @@ class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
 
 
 #if defined (__STM32F1__)
-  uint8_t DPINS[8] = {PA0, PA1, PA2, PA3, PA4, PA5, PA6, PA7};
 	 uint16_t lineBuffer[ILI9341_TFTHEIGHT]; // DMA buffer. 16bit color data per pixel
 #endif
 };
