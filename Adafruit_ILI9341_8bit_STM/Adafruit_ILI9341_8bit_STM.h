@@ -16,7 +16,7 @@ This library has been modified for the Maple Mini
 
 #define ILI9341_NOP     0x00
 #define ILI9341_SWRESET 0x01
-#define ILI9341_RDDID   0x04
+#define ILI9341_RDDID   0xD3
 #define ILI9341_RDDST   0x09
 
 #define ILI9341_SLPIN   0x10
@@ -27,7 +27,7 @@ This library has been modified for the Maple Mini
 #define ILI9341_RDMODE  0x0A
 #define ILI9341_RDMADCTL  0x0B
 #define ILI9341_RDPIXFMT  0x0C
-#define ILI9341_RDIMGFMT  0x0A
+#define ILI9341_RDIMGFMT  0x0D
 #define ILI9341_RDSELFDIAG  0x0F
 
 #define ILI9341_INVOFF  0x20
@@ -153,8 +153,7 @@ class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
   /* These are not for current use, 8-bit protocol only! */
   //uint8_t  readdata(void),
    uint8_t readcommand8(uint8_t reg); 
-   uint16_t readcommand16(uint8_t reg);
-   uint32_t readcommand32(uint8_t reg);
+   uint32_t readID(void);
 
   void     write8(uint8_t),
     writecommand(uint8_t c),

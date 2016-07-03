@@ -32,11 +32,9 @@ Adafruit_ILI9341_8bit_STM::Adafruit_ILI9341_8bit_STM(void)
 }
 
 void Adafruit_ILI9341_8bit_STM::setWriteDataBus(void) {
-  //set the pins to output mode
-  //optimize later with CRL and CRH register
-  for (uint8_t i = 0; i <= 7; i++){
-    pinMode(DPINS[i], OUTPUT);
-  }
+  // //set the pins to output mode
+  TFT_DATA->regs->CRL = 0x33333333;
+  //each pin is configured by four bits, and 0011 means output mode
 }
 
 void Adafruit_ILI9341_8bit_STM::setReadDataBus(void) {
@@ -513,116 +511,43 @@ void Adafruit_ILI9341_8bit_STM::invertDisplay(boolean i) {
 ////////// stuff not actively being used, but kept for posterity
 
 
-// uint8_t Adafruit_ILI9341_8bit_STM::spiread(void) {
-//   uint8_t r = 0;
+uint8_t Adafruit_ILI9341_8bit_STM::read8(void){
+  RD_ACTIVE;
+  delay(5);
+  uint8_t temp = (TFT_DATA->regs->IDR & 0x00FF);
+  RD_IDLE;
+  delay(5);
+  return temp;
+}
 
-//   if (hwSPI) {
-// #if defined (__AVR__)
-//     uint8_t backupSPCR = SPCR;
-//     SPCR = mySPCR;
-//     SPDR = 0x00;
-//     while (!(SPSR & _BV(SPIF)));
-//     r = SPDR;
-//     SPCR = backupSPCR;
-// #elif defined(TEENSYDUINO)
-//     r = SPI.transfer(0x00);
-// #elif defined (__STM32F1__)
-//     r = SPI.transfer(0x00);
-// #elif defined (__arm__)
-//     SPI.setClockDivider(11); // 8-ish MHz (full! speed!)
-//     SPI.setBitOrder(MSBFIRST);
-//     SPI.setDataMode(SPI_MODE0);
-//     r = SPI.transfer(0x00);
-// #endif
-//   } else {
+uint8_t Adafruit_ILI9341_8bit_STM::readcommand8(uint8_t c) {
+  writecommand(c);
+  CS_ACTIVE;
+  CD_DATA;
+  setReadDataBus();
+  delay(5);
+  //single dummy data
+  uint8_t data = read8();
+  //real data
+  data = read8();
+  setWriteDataBus();
+  CS_IDLE;
+  return data;
+}
 
-//     for (uint8_t i = 0; i < 8; i++) {
-//       digitalWrite(_sclk, LOW);
-//       digitalWrite(_sclk, HIGH);
-//       r <<= 1;
-//       if (digitalRead(_miso))
-//         r |= 0x1;
-//     }
-//   }
-//   //Serial.print("read: 0x"); Serial.print(r, HEX);
-
-//   return r;
-// }
-
-// uint8_t Adafruit_ILI9341_8bit_STM::readdata(void) {
-//   digitalWrite(_dc, HIGH);
-//   digitalWrite(_cs, LOW);
-//   uint8_t r = spiread();
-//   digitalWrite(_cs, HIGH);
-
-//   return r;
-// }
-
-
-// uint8_t Adafruit_ILI9341_8bit_STM::readcommand8(uint8_t c, uint8_t index) {
-//   if (hwSPI) spi_begin();
-//   digitalWrite(_dc, LOW); // command
-//   digitalWrite(_cs, LOW);
-//   write8(0xD9);  // woo sekret command?
-//   digitalWrite(_dc, HIGH); // data
-//   write8(0x10 + index);
-//   digitalWrite(_cs, HIGH);
-
-//   digitalWrite(_dc, LOW);
-//   //if(hwSPI) digitalWrite(_sclk, LOW);
-//   digitalWrite(_cs, LOW);
-//   write8(c);
-
-//   digitalWrite(_dc, HIGH);
-//   uint8_t r = spiread();
-//   digitalWrite(_cs, HIGH);
-//   if (hwSPI) spi_end();
-//   return r;
-// }
-
-
-
-/*
-
- uint16_t Adafruit_ILI9341_8bit_STM::readcommand16(uint8_t c) {
- digitalWrite(_dc, LOW);
- if (_cs)
- digitalWrite(_cs, LOW);
-
- write8(c);
- pinMode(_sid, INPUT); // input!
- uint16_t r = spiread();
+ uint32_t Adafruit_ILI9341_8bit_STM::readID(void) {
+ writecommand(ILI9341_RDDID);
+ CS_ACTIVE;
+ CD_DATA;
+ setReadDataBus();
+ uint32_t r = read8();
  r <<= 8;
- r |= spiread();
- if (_cs)
- digitalWrite(_cs, HIGH);
-
- pinMode(_sid, OUTPUT); // back to output
+ r |= read8();
+ r <<= 8;
+ r |= read8();
+ r <<= 8;
+ r |= read8();
+ setWriteDataBus();
+ CS_IDLE;
  return r;
  }
-
- uint32_t Adafruit_ILI9341_8bit_STM::readcommand32(uint8_t c) {
- digitalWrite(_dc, LOW);
- if (_cs)
- digitalWrite(_cs, LOW);
- write8(c);
- pinMode(_sid, INPUT); // input!
-
- dummyclock();
- dummyclock();
-
- uint32_t r = spiread();
- r <<= 8;
- r |= spiread();
- r <<= 8;
- r |= spiread();
- r <<= 8;
- r |= spiread();
- if (_cs)
- digitalWrite(_cs, HIGH);
-
- pinMode(_sid, OUTPUT); // back to output
- return r;
- }
-
- */
