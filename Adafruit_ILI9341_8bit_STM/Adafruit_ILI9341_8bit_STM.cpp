@@ -15,16 +15,18 @@ Includes DMA transfers on DMA1 CH2 and CH3.
 Adafruit_ILI9341_8bit_STM::Adafruit_ILI9341_8bit_STM(void)
 : Adafruit_GFX(ILI9341_TFTWIDTH, ILI9341_TFTHEIGHT) {
   
-  pinMode(TFT_CS, OUTPUT);    // Enable outputs
-  pinMode(TFT_RS, OUTPUT);
-  pinMode(TFT_WR, OUTPUT);
-  pinMode(TFT_RD, OUTPUT);
+  //Set PB4 - PB7 as output
+  //Note: CRH and CRL are both 32 bits wide
+  //Each pin is represented by 4 bits 0x3 (hex) sets that pin to O/P
+  TFT_CNTRL->regs->CRL = (TFT_CNTRL->regs->CRL & 0x0000FFFF) | 0x33330000;
     CS_IDLE; // Set all control bits to HIGH (idle)
     CD_DATA; // Signals are ACTIVE LOW
     WR_IDLE;
     RD_IDLE;
   if(TFT_RST) {
-    pinMode(TFT_RST, OUTPUT);
+    //pinMode(TFT_RST, OUTPUT);
+    //Set PB8 as output
+    TFT_CNTRL->regs->CRH = (TFT_CNTRL->regs->CRH & 0xFFFFFFF0) | 0x00000003; 
     digitalWrite(TFT_RST, HIGH);
   }
   //probably should set up 8 bit parallel port to write mode.
@@ -34,12 +36,11 @@ Adafruit_ILI9341_8bit_STM::Adafruit_ILI9341_8bit_STM(void)
 void Adafruit_ILI9341_8bit_STM::setWriteDataBus(void) {
   // //set the pins to output mode
   TFT_DATA->regs->CRL = 0x33333333;
-  //each pin is configured by four bits, and 0011 means output mode
+  //each pin is configured by four bits, and 0b0011 or 0x3 means output mode
 }
 
 void Adafruit_ILI9341_8bit_STM::setReadDataBus(void) {
-  //set the pins to output mode
-  //optimize later with CRL and CRH register
+  //set the pins to input mode
   for (uint8_t i = 0; i <= 7; i++){
     pinMode(DPINS[i], INPUT);
   }
