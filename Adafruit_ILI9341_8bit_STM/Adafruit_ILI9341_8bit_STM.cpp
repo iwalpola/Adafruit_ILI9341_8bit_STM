@@ -63,10 +63,6 @@ void Adafruit_ILI9341_8bit_STM::write8(uint8_t c) {
   CS_IDLE;
   //delayMicroseconds(50); //used to observe patterns
 }
-void Adafruit_ILI9341_8bit_STM::write8special(uint8_t c) {
-  TFT_DATA->regs->BSRR = ((~c)<<16) | (c); //Set pins to the 8 bit number
-  WR_STROBE;
-}
 
 void Adafruit_ILI9341_8bit_STM::writecommand(uint8_t c) {
   CD_COMMAND;

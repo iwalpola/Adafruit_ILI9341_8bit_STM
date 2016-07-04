@@ -127,6 +127,9 @@ Define pins and Output Data Registers
 #define WR_STROBE { WR_ACTIVE; WR_IDLE; }
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
+//Set pins to the 8 bit number
+#define write8special(c) { TFT_DATA->regs->BSRR = ((~c)<<16) | (c); WR_STROBE; }
+
 
 class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
 
@@ -162,7 +165,6 @@ class Adafruit_ILI9341_8bit_STM : public Adafruit_GFX {
   void     setReadDataBus(void),
     setWriteDataBus(void),
     write8(uint8_t),
-    write8special(uint8_t),
     writecommand(uint8_t c),
     writedata(uint8_t d),
     commandList(uint8_t *addr);
