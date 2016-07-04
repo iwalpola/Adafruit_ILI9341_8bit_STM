@@ -7,19 +7,19 @@
 
 #### Benchmarks
 ```
-Benchmark                Time (microseconds)  
-Screen fill              784951  
-Text                     27277  
-Lines                    242789  
-Horiz/Vert Lines         66034  
-Rectangles (outline)     42204  
-Rectangles (filled)      1630078  
-Circles (filled)         240487  
-Circles (outline)        180967  
-Triangles (outline)      58242  
-Triangles (filled)       563808  
-Rounded rects (outline)  84634  
-Rounded rects (filled)   1777583
+Benchmark                Time (microseconds)
+Screen fill              320577
+Text                     14869
+Lines                    129592
+Horiz/Vert Lines         25437
+Rectangles (outline)     16493
+Rectangles (filled)      666012
+Circles (filled)         104502
+Circles (outline)        96406
+Triangles (outline)      30358
+Triangles (filled)       230338
+Rounded rects (outline)  41103
+Rounded rects (filled)   709046
 ```
 
 ### How to use
