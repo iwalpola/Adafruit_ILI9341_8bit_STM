@@ -6,7 +6,7 @@
  - graphicstest.ino
 
 #### Benchmarks
-'''
+```
 Benchmark                Time (microseconds)  
 Screen fill              784951  
 Text                     27277  
@@ -20,7 +20,7 @@ Triangles (outline)      58242
 Triangles (filled)       563808  
 Rounded rects (outline)  84634  
 Rounded rects (filled)   1777583
-'''
+```
 
 ### How to use
 #### 8 bit parallel interface
