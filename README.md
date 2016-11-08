@@ -1,3 +1,5 @@
+##Better library is available here:
+https://github.com/stevstrong/Adafruit_TFTLCD_8bit_STM32
 # Adafruit_ILI9341_8bit_STM for STM32duino
 8 bit parallel library for ILI9341 and STM32F1
 
